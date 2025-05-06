@@ -1,5 +1,7 @@
 # FlashTruth
 
+![ShellCheck](https://github.com/devDudu-21/flash-truth/actions/workflows/shellcheck.yml/badge.svg)
+
 ## USB Flash Drive Real Capacity Verifier
 
 FlashTruth is a command-line (CLI) tool for Linux, written in Shell Script, that verifies the authenticity of USB flash drives by testing their actual storage capacity and collecting critical device information.
