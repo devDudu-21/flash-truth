@@ -34,17 +34,17 @@ It helps identify counterfeit devices, perform `f3` write/read tests, format dri
 
 ## 🚀 How to use
 
-1. Clone this repository or copy the `flashtruth.sh` script.
+1. Clone this repository or copy the `flash-truth.sh` script.
 1. Grant execution permissions:
 
 ```bash
-chmod +x flashtruth.sh
+chmod +x flash-truth.sh
 ```
 
 1. Run the script:
 
 ```bash
-./flashtruth.sh
+./flash-truth.sh
 ```
 
 1. Follow the interactive menu.
