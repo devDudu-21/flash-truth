@@ -1,42 +1,13 @@
 #!/usr/bin/env bash
 
-LANGUAGE="pt"                  # default language: pt or en
-MOCK_MODE=false
-DEBUG=false
-RUN_CHECK=false
 
-# parse options
-while [[ $# -gt 0 ]]; do
-  case $1 in
-    --mock)        MOCK_MODE=true ;;
-    --debug)       DEBUG=true ;;
-    --mock-check)  MOCK_MODE=true; RUN_CHECK=true ;;
-    *)             echo -e "${RED}$(translate unknown_option) $1${NC}"; exit 1 ;;
-  esac
-  shift
-done
-
-log_debug() { $DEBUG && echo "[DEBUG] $1"; }
-
-# Detecta idioma do sistema se for pt ou en
-SYSTEM_LANG=$(locale | awk -F= '/^LANG=/ {print $2}' | cut -d_ -f1)
-if [[ "$SYSTEM_LANG" =~ ^(pt|en)$ ]]; then
-  LANGUAGE="$SYSTEM_LANG"
-fi
-
-# Criar pendrive fake em mock
-if $MOCK_MODE; then
-  translate mock_mode
-  MOCK_DEVICE_NAME="/tmp/flashtruth-mockdrive"
-  mkdir -p "$MOCK_DEVICE_NAME"
-  touch "$MOCK_DEVICE_NAME/PLACEHOLDER.txt"
-  log_debug "$(translate mock_mountpoint) $MOCK_DEVICE_NAME"
-fi
-
-# Cores
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; NC='\033[0m'
 
-# Função de tradução
+# Se não for terminal interativo (ex: execução via BATS), desativa cores
+if [[ ! -t 1 ]]; then
+  RED=''; GREEN=''; YELLOW=''; NC=''
+fi
+
 translate() {
   case $LANGUAGE in
     pt) case $1 in
@@ -119,6 +90,45 @@ translate() {
   esac
 }
 
+MOCK_MODE=false
+DEBUG=false
+RUN_CHECK=false
+
+# parse options
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --mock)        MOCK_MODE=true ;;
+    --debug)       DEBUG=true ;;
+    --mock-check)  MOCK_MODE=true; RUN_CHECK=true ;;
+    *)             echo -e "${RED}$(translate unknown_option) $1${NC}"; exit 1 ;;
+  esac
+  shift
+done
+
+log_debug() { $DEBUG && echo "[DEBUG] $1"; }
+
+# Detects the language
+if [[ ! "${LANGUAGE:-}" =~ ^(pt|en)$ ]]; then
+  SYSTEM_LANG=$(locale | awk -F= '/^LANG=/ {print $2}' | cut -d_ -f1)
+  if [[ "$SYSTEM_LANG" =~ ^(pt|en)$ ]]; then
+    export LANGUAGE="$SYSTEM_LANG"
+  else
+    export LANGUAGE="en"  # Default to English
+  fi
+fi
+
+if $MOCK_MODE; then
+  echo -e "${YELLOW}[MOCK] $(translate mock_mode)${NC}"
+  MOCK_DEVICE_NAME="/tmp/flashtruth-mockdrive"
+  mkdir -p "$MOCK_DEVICE_NAME"
+  touch "$MOCK_DEVICE_NAME/PLACEHOLDER.txt"
+  log_debug "$(translate mock_mountpoint) $MOCK_DEVICE_NAME"
+fi
+
+
+# Função de tradução
+
+
 print_banner() {
   echo -e "${GREEN}"
   echo "███████╗██╗      █████╗ ███████╗██╗  ██╗    ████████╗██████╗ ██╗   ██╗████████╗██╗  ██╗"
@@ -137,7 +147,7 @@ list_devices() {
   local mount_points=()
   if $MOCK_MODE; then
     mount_points=("/tmp/flashtruth-mockdrive [SIMULADO]")
-      mount_path="/tmp/flashtruth-mockdrive"  
+    mount_path="/tmp/flashtruth-mockdrive"  
   else
     for base in /media/$USER /run/media/$USER; do
       [ -d "$base" ] || continue
@@ -273,7 +283,7 @@ main_menu() {
       2) test_drive ;;
       0) echo -e "${GREEN}$(translate exiting)${NC}"; exit 0 ;;
       *) 
-       echo -e "${RED}$(translate invalid_option)${NC}"
+      echo -e "${RED}$(translate invalid_option)${NC}"
         sleep 1 ;;
     esac
   done
