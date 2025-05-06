@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; NC='\033[0m'
 
-# Se não for terminal interativo (ex: execução via BATS), desativa cores
+# If shell is not an interactive terminal (e.g., running BATS), disable colors
 if [[ ! -t 1 ]]; then
   RED=''; GREEN=''; YELLOW=''; NC=''
 fi
 
+# Translation function
 translate() {
   case $LANGUAGE in
     pt) case $1 in
@@ -94,7 +94,7 @@ MOCK_MODE=false
 DEBUG=false
 RUN_CHECK=false
 
-# parse options
+# Parse options
 while [[ $# -gt 0 ]]; do
   case $1 in
     --mock)        MOCK_MODE=true ;;
@@ -126,9 +126,6 @@ if $MOCK_MODE; then
 fi
 
 
-# Função de tradução
-
-
 print_banner() {
   echo -e "${GREEN}"
   echo "███████╗██╗      █████╗ ███████╗██╗  ██╗    ████████╗██████╗ ██╗   ██╗████████╗██╗  ██╗"
@@ -143,6 +140,7 @@ print_banner() {
   echo ""
 }
 
+# Lists devices and sets mount_path
 list_devices() {
   local mount_points=()
   if $MOCK_MODE; then
@@ -173,6 +171,7 @@ list_devices() {
   mount_path="${mount_points[$((choice-1))]}"
 }
 
+# Formats the drive
 format_drive() {
   dev=$(df "$mount_path" | tail -1 | awk '{print $1}' | sed 's/[0-9]*$//')
   echo -e "${RED}[!] $(translate format_warn)${NC}"
@@ -192,6 +191,7 @@ format_drive() {
   echo -e "${GREEN}$(translate done_format)${NC}"; sleep 1
 }
 
+# Checks device info
 check_info() {
   list_devices
   if $MOCK_MODE; then
@@ -257,6 +257,7 @@ check_info() {
 }
 
 
+# Tests the drive with f3
 test_drive() {
   sudo apt install -y f3 &>/dev/null
   list_devices
@@ -272,6 +273,7 @@ test_drive() {
   read -r -p "$(translate press_enter)"
 }
 
+# Main menu function
 main_menu() {
   while true; do
     clear; print_banner
@@ -289,11 +291,11 @@ main_menu() {
   done
 }
 
-# direct mock-check
+# Direct mock-check
 if $RUN_CHECK; then
   check_info
   exit 0
 fi
 
-# entry point
+# Entry point
 main_menu
