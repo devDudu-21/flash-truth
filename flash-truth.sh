@@ -26,7 +26,7 @@ fi
 
 # Criar pendrive fake em mock
 if $MOCK_MODE; then
-  echo "$(translate mock_mode)"
+  translate mock_mode
   MOCK_DEVICE_NAME="/tmp/flashtruth-mockdrive"
   mkdir -p "$MOCK_DEVICE_NAME"
   touch "$MOCK_DEVICE_NAME/PLACEHOLDER.txt"
@@ -67,6 +67,13 @@ translate() {
       status_high)     echo "🟢 Alta confiabilidade";;
       status_moderate) echo "🟡 Moderada";;
       status_low)      echo "🔴 Provável falsificação";;
+      report_device) echo "Dispositivo:";;
+      report_manufacturer) echo "Fabricante:";;
+      report_model) echo "Modelo:";;
+      report_serial) echo "Serial:";;
+      report_filesystem) echo "Sistema de Arquivos:";;
+      report_size) echo "Tamanho:";;
+      report_reliability) echo "Confiabilidade:";;
       *) echo "$1";;
     esac;;
     en) case $1 in
@@ -97,6 +104,13 @@ translate() {
       status_high)     echo "🟢 High reliability";;
       status_moderate) echo "🟡 Moderate";;
       status_low)      echo "🔴 Likely counterfeit";;
+      report_device) echo "Device:";;
+      report_manufacturer) echo "Manufacturer:";;
+      report_model) echo "Model:";;
+      report_serial) echo "Serial:";;
+      report_filesystem) echo "Filesystem:";;
+      report_size) echo "Size:";;
+      report_reliability) echo "Reliability:";;
       *) echo "$1";;
     esac;;
     *) echo "$1";;
@@ -217,11 +231,13 @@ check_info() {
   dt=$(date "+%Y-%m-%d_%H%M")
   file="flashtruth_relatorio_${dt}.txt"
   {
-    echo "Dispositivo: $mount_path"
-    echo "Fabricante: $vendor"; echo "Modelo: $model"
-    echo "Serial: $serial"; echo "Filesystem: $fs"
-    echo "Tamanho: $size_gb GB"
-    echo "Confiabilidade: $points/10 $status"
+    echo "$(translate report_device) $mount_path"
+    echo "$(translate report_manufacturer) $vendor"
+    echo "$(translate report_model) $model"
+    echo "$(translate report_serial) $serial"
+    echo "$(translate report_filesystem) $fs"
+    echo "$(translate report_size) $size_gb GB"
+    echo "$(translate report_reliability) $points/10 $status"
   } > "$file"
   echo -e "${GREEN}$(translate saved_report) $file${NC}"
   read -r -p "$(translate press_enter)"
