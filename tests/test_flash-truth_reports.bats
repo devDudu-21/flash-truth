@@ -9,7 +9,7 @@ setup() {
 }
 
 @test "Verifica se relatório é gerado após verificação mock direta" {
-  run bash -c "/home/devdudu/workplace/flash-truth/flash-truth.sh --mock-check" <<< "1"
+  run ./flash-truth.sh --mock-check <<< "1"
   report=$(ls flashtruth_relatorio_*.txt 2>/dev/null | tail -n 1)
   [ -n "$report" ]
   [ -f "$report" ]
