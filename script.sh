@@ -1,7 +1,12 @@
 #!/bin/bash
 
-# Alterne entre 'pt' ou 'en'
-LANG_FLASH=pt
+LANG_FLASH=en
+
+# Detectar idioma do sistema e usar se for pt ou en
+sys_lang=$(locale | grep LANG= | cut -d= -f2 | cut -d_ -f1)
+if [[ "$sys_lang" == "pt" || "$sys_lang" == "en" ]]; then
+    LANG_FLASH=$sys_lang
+fi
 
 # Cores
 RED='\033[0;31m'
