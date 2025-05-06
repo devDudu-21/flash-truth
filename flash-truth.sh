@@ -74,6 +74,7 @@ translate() {
       report_filesystem) echo "Sistema de Arquivos:";;
       report_size) echo "Tamanho:";;
       report_reliability) echo "Confiabilidade:";;
+      report_prefix) echo "flashtruth_relatorio";;
       *) echo "$1";;
     esac;;
     en) case $1 in
@@ -111,6 +112,7 @@ translate() {
       report_filesystem) echo "Filesystem:";;
       report_size) echo "Size:";;
       report_reliability) echo "Reliability:";;
+      report_prefix) echo "flashtruth_report";;
       *) echo "$1";;
     esac;;
     *) echo "$1";;
@@ -228,8 +230,9 @@ check_info() {
   echo "Tamanho: ${size_gb}GB"
   echo -e "${YELLOW}Confiabilidade: $points/10 $status${NC}"
 
+  report_prefix="$(translate report_prefix)"
   dt=$(date "+%Y-%m-%d_%H%M")
-  file="flashtruth_relatorio_${dt}.txt"
+  file="${report_prefix}_${dt}.txt"
   {
     echo "$(translate report_device) $mount_path"
     echo "$(translate report_manufacturer) $vendor"
