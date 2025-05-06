@@ -10,4 +10,4 @@ jobs:
       - name: Install ShellCheck
         run: sudo apt-get install -y shellcheck
       - name: Run ShellCheck
-        run: shellcheck flashtruth.sh
+        run: shellcheck flash-truth.sh
