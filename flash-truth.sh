@@ -92,7 +92,7 @@ listar_dispositivos() {
     done
 
     echo ""
-    read -p "Digite o número do pendrive desejado: " escolha
+    read -r -p "Digite o número do pendrive desejado: " escolha
     if ! [[ "$escolha" =~ ^[0-9]+$ ]] || [ "$escolha" -lt 1 ] || [ "$escolha" -gt "${#pontos_montagem[@]}" ]; then
         echo -e "${RED}[-] Escolha inválida.${NC}"
         exit 1
@@ -103,14 +103,14 @@ listar_dispositivos() {
 formatar_pendrive() {
     dev=$(df "$caminho" | tail -1 | awk '{print $1}' | sed 's/[0-9]*$//')
     echo -e "${RED}[!] $(t format_warn)${NC}"
-    read -p "$(t confirm_format) " confirm
+    read -r -p "$(t confirm_format) " confirm
     [[ "$confirm" != "s" && "$confirm" != "S" && "$confirm" != "y" && "$confirm" != "Y" ]] && return
 
     echo -e "${YELLOW}$(t select_fs)${NC}"
     echo "[1] FAT32"
     echo "[2] exFAT"
     echo "[3] ext4"
-    read -p "Opção: " tipo_fs
+    read -r -p "Opção: " tipo_fs
     case "$tipo_fs" in
         1) fs_type="vfat" ;;
         2) fs_type="exfat" ;;
@@ -167,7 +167,7 @@ verificar_info() {
         echo "Confiabilidade: $pontos/10 $status"
     } > "$file"
     echo -e "${GREEN}$(t saved_report) $file${NC}"
-    read -p "Pressione ENTER para voltar ao menu."
+    read -r -p "Pressione ENTER para voltar ao menu."
 }
 
 testar_pendrive() {
@@ -176,15 +176,15 @@ testar_pendrive() {
     arquivos=$(find "$caminho" -mindepth 1 | wc -l)
     if [ "$arquivos" -gt 0 ]; then
         echo -e "${RED}[!] $(t files_found "$arquivos")${NC}"
-        read -p "$(t confirm_format) " esc
+        read -r -p "$(t confirm_format) " esc
         [[ "$esc" == "s" || "$esc" == "S" || "$esc" == "y" || "$esc" == "Y" ]] && formatar_pendrive
     fi
     f3write "$caminho"
     f3read "$caminho"
-    read -p "$(t remove_temp) " clean
+    read -r -p "$(t remove_temp) " clean
     [[ "$clean" == "s" || "$clean" == "S" || "$clean" == "y" || "$clean" == "Y" ]] && rm -f "$caminho"/*.h2w "$caminho"/.f3* &>/dev/null
     echo ""
-    read -p "Pressione ENTER para voltar ao menu."
+    read -r -p "Pressione ENTER para voltar ao menu."
 }
 
 main_menu() {
@@ -196,7 +196,7 @@ main_menu() {
         echo "[2] $(t menu2)"
         echo "[0] $(t menu0)"
         echo ""
-        read -p "Opção: " opcao
+        read -r -p "Opção: " opcao
         case $opcao in
             1) verificar_info ;;
             2) testar_pendrive ;;
